@@ -1,21 +1,25 @@
 :root {
-    --bg-color: #121214;
-    --card-bg: #1a1a1e;
-    --text-color: #e4e4e7;
-    --accent-color: #6366f1;
-    --accent-hover: #4f46e5;
-    --border-color: #2d2d34;
-    --high-priority: #ef4444;
-    --med-priority: #f59e0b;
-    --low-priority: #10b981;
+    --bg-color: #0d0e12;
+    --card-bg: rgba(26, 27, 38, 0.6);
+    --text-color: #f1f1f4;
+    --text-muted: #9e9eb0;
+    --accent-color: #7c4dff;
+    --accent-hover: #651fff;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --high-priority: #ff4a5a;
+    --med-priority: #ffb703;
+    --low-priority: #00f5d4;
 }
 
 body {
     background-color: var(--bg-color);
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(124, 77, 255, 0.1) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(0, 245, 212, 0.05) 0px, transparent 50%);
     color: var(--text-color);
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     margin: 0;
-    padding: 20px;
+    padding: 30px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -25,232 +29,198 @@ body {
 
 .header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
     position: relative;
     width: 100%;
     max-width: 1200px;
 }
 
 #clock {
-    font-size: 3rem;
-    font-weight: bold;
-    color: var(--accent-color);
+    font-size: 3.5rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(45deg, #7c4dff, #00f5d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     margin: 0;
 }
 
 #greeting {
-    font-size: 1.5rem;
-    margin: 5px 0 0 0;
-    color: #a1a1aa;
+    font-size: 1.3rem;
+    margin: 8px 0 0 0;
+    color: var(--text-muted);
+    font-weight: 400;
 }
 
 .settings-btn {
     position: absolute;
-    top: 10px;
+    top: 50%;
+    transform: translateY(-50%);
     right: 10px;
-    background-color: #27272a;
+    background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border-color);
-    padding: 8px 12px;
+    padding: 10px 16px;
     font-size: 14px;
-    color: white;
-    border-radius: 6px;
+    color: var(--text-color);
+    border-radius: 8px;
     cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+}
+
+.settings-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .dashboard-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 30px;
     width: 100%;
     max-width: 1200px;
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 1100px) {
     .dashboard-grid {
-        grid-template-columns: 1.2fr 0.8fr;
+        grid-template-columns: 1.3fr 0.7fr;
     }
 }
 
 .card {
     background-color: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     display: flex;
     flex-direction: column;
 }
 
 h2 {
     margin-top: 0;
-    font-size: 1.25rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    padding-bottom: 14px;
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
     color: #fff;
 }
 
-/* Task Input Controls */
+/* Elegant Controls */
 .input-stack {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
 .input-row {
     display: flex;
-    gap: 10px;
+    gap: 12px;
 }
 
 input, select {
-    background-color: #27272a;
+    background: rgba(0, 0, 0, 0.2);
     border: 1px solid var(--border-color);
     color: #fff;
-    padding: 12px;
-    border-radius: 6px;
+    padding: 14px;
+    border-radius: 8px;
     font-size: 14px;
     outline: none;
     box-sizing: border-box;
+    transition: all 0.2s ease;
 }
 
 input:focus, select:focus {
     border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(124, 77, 255, 0.15);
 }
 
 input[type="text"] { flex-grow: 1; }
 input[type="date"] { color-scheme: dark; }
 
 button {
-    background-color: var(--accent-color);
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 6px;
+    padding: 12px 20px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
-    transition: background 0.2s;
+    box-shadow: 0 4px 12px rgba(124, 77, 255, 0.3);
+    transition: all 0.2s ease;
 }
 
-button:hover { background-color: var(--accent-hover); }
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(124, 77, 255, 0.4);
+}
 
-/* FIXED: Kanban Board Row Structure */
+/* Clean Kanban Lanes */
 .kanban-board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    gap: 16px;
     margin-top: 5px;
 }
 
-/* FIXED: Column wraps items vertically beneath the label */
 .kanban-column {
-    background-color: #141416;
-    border: 1px dashed var(--border-color);
-    border-radius: 8px;
-    padding: 12px;
-    min-height: 350px;
-    max-height: 450px;
+    background-color: rgba(0, 0, 0, 0.15);
+    border: 1px dashed rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 16px;
+    min-height: 380px;
+    max-height: 480px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    transition: background 0.2s, border-color 0.2s;
+    gap: 12px;
+    transition: all 0.2s ease;
 }
 
 .kanban-column.drag-over {
-    background-color: #1e1e24;
+    background-color: rgba(124, 77, 255, 0.05);
     border-color: var(--accent-color);
+    border-style: solid;
 }
 
 .column-header {
-    font-size: 0.9rem;
-    font-weight: bold;
+    font-size: 0.85rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
     text-align: center;
     position: sticky;
     top: 0;
-    background-color: #141416;
-    padding: 4px 0;
-    border-bottom: 1px solid #222;
+    z-index: 2;
+    padding: 6px 0;
 }
 
 .col-high { color: var(--high-priority); }
 .col-medium { color: var(--med-priority); }
 .col-low { color: var(--low-priority); }
 
-/* Draggable Task Styling Updates */
+/* Luxury Cards */
 .task-item {
-    background-color: #212124;
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 12px;
+    border-radius: 10px;
+    padding: 14px;
     cursor: grab;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     user-select: none;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .task-item:hover {
+    background: rgba(255, 255, 255, 0.06);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-
-.task-item:active { cursor: grabbing; }
-
-.task-item.high { border-left: 4px solid var(--high-priority); }
-.task-item.medium { border-left: 4px solid var(--med-priority); }
-.task-item.low { border-left: 4px solid var(--low-priority); }
-
-.task-info { display: flex; flex-direction: column; gap: 4px; }
-.task-text { font-size: 14px; font-weight: 600; color: #fff; word-break: break-word; }
-.task-date { font-size: 11px; color: #a1a1aa; display: flex; align-items: center; gap: 3px; }
-
-.delete-btn {
-    background-color: transparent;
-    color: #a1a1aa;
-    padding: 4px 8px;
-    font-size: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-}
-.delete-btn:hover {
-    background-color: #ef4444;
-    color: white;
-    border-color: #ef4444;
-}
-
-/* Calendar Container */
-.calendar-container {
-    position: relative;
-    padding-bottom: 85%;
-    height: 0;
-    overflow: hidden;
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-}
-
-.calendar-container iframe {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%; border: 0;
-}
-
-/* Settings Modal */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.8);
-    justify-content: center; align-items: center; z-index: 10;
-}
-
-.modal-content {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    padding: 25px; border-radius: 12px;
-    width: 90%; max-width: 500px;
-    display: flex; flex-direction: column; gap: 15px;
-}
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.
