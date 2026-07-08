@@ -52,6 +52,9 @@ body {
     border: 1px solid var(--border-color);
     padding: 8px 12px;
     font-size: 14px;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
 }
 
 .dashboard-grid {
@@ -62,9 +65,9 @@ body {
     max-width: 1200px;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 1000px) {
     .dashboard-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1.2fr 0.8fr;
     }
 }
 
@@ -86,6 +89,7 @@ h2 {
     color: #fff;
 }
 
+/* Task Input Controls */
 .input-stack {
     display: flex;
     flex-direction: column;
@@ -102,7 +106,7 @@ input, select {
     background-color: #27272a;
     border: 1px solid var(--border-color);
     color: #fff;
-    padding: 10px;
+    padding: 12px;
     border-radius: 6px;
     font-size: 14px;
     outline: none;
@@ -129,27 +133,31 @@ button {
 
 button:hover { background-color: var(--accent-hover); }
 
+/* FIXED: Kanban Board Row Structure */
 .kanban-board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    gap: 12px;
     margin-top: 5px;
 }
 
+/* FIXED: Column wraps items vertically beneath the label */
 .kanban-column {
     background-color: #141416;
     border: 1px dashed var(--border-color);
     border-radius: 8px;
-    padding: 10px;
-    min-height: 200px;
+    padding: 12px;
+    min-height: 350px;
+    max-height: 450px;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    transition: background 0.2s;
+    gap: 10px;
+    transition: background 0.2s, border-color 0.2s;
 }
 
 .kanban-column.drag-over {
-    background-color: #212127;
+    background-color: #1e1e24;
     border-color: var(--accent-color);
 }
 
@@ -158,25 +166,37 @@ button:hover { background-color: var(--accent-hover); }
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     text-align: center;
+    position: sticky;
+    top: 0;
+    background-color: #141416;
+    padding: 4px 0;
+    border-bottom: 1px solid #222;
 }
 
 .col-high { color: var(--high-priority); }
 .col-medium { color: var(--med-priority); }
 .col-low { color: var(--low-priority); }
 
+/* Draggable Task Styling Updates */
 .task-item {
     background-color: #212124;
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    padding: 10px;
+    padding: 12px;
     cursor: grab;
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
     user-select: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.task-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .task-item:active { cursor: grabbing; }
@@ -185,16 +205,17 @@ button:hover { background-color: var(--accent-hover); }
 .task-item.medium { border-left: 4px solid var(--med-priority); }
 .task-item.low { border-left: 4px solid var(--low-priority); }
 
-.task-info { display: flex; flex-direction: column; gap: 3px; }
-.task-text { font-size: 14px; font-weight: 600; word-break: break-word; }
-.task-date { font-size: 11px; color: #a1a1aa; }
+.task-info { display: flex; flex-direction: column; gap: 4px; }
+.task-text { font-size: 14px; font-weight: 600; color: #fff; word-break: break-word; }
+.task-date { font-size: 11px; color: #a1a1aa; display: flex; align-items: center; gap: 3px; }
 
 .delete-btn {
     background-color: transparent;
     color: #a1a1aa;
-    padding: 2px 6px;
-    font-size: 11px;
+    padding: 4px 8px;
+    font-size: 12px;
     border: 1px solid var(--border-color);
+    border-radius: 4px;
 }
 .delete-btn:hover {
     background-color: #ef4444;
@@ -202,9 +223,10 @@ button:hover { background-color: var(--accent-hover); }
     border-color: #ef4444;
 }
 
+/* Calendar Container */
 .calendar-container {
     position: relative;
-    padding-bottom: 70%;
+    padding-bottom: 85%;
     height: 0;
     overflow: hidden;
     border-radius: 6px;
@@ -216,11 +238,12 @@ button:hover { background-color: var(--accent-hover); }
     top: 0; left: 0; width: 100%; height: 100%; border: 0;
 }
 
+/* Settings Modal */
 .modal {
     display: none;
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.7);
+    background-color: rgba(0,0,0,0.8);
     justify-content: center; align-items: center; z-index: 10;
 }
 
