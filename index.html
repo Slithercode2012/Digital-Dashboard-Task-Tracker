@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Productivity Dashboard</title>
+    <title>Shared Dashboard & Task Tracker</title>
     <style>
         :root {
             --bg-color: #121214;
@@ -47,10 +47,10 @@
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
             gap: 20px;
             width: 100%;
-            max-width: 800px;
+            max-width: 1100px;
         }
 
         .card {
@@ -59,6 +59,18 @@
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .calendar-card {
+            grid-column: span 1;
+        }
+
+        @media (min-width: 850px) {
+            .calendar-card {
+                grid-column: span 2;
+            }
         }
 
         h2 {
@@ -69,11 +81,17 @@
             color: #fff;
         }
 
-        /* To-Do List Styles */
-        .input-group {
+        /* Form Layout */
+        .input-stack {
             display: flex;
+            flex-direction: column;
             gap: 10px;
             margin-bottom: 15px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
         }
 
         input, textarea {
@@ -84,6 +102,7 @@
             border-radius: 6px;
             font-size: 14px;
             outline: none;
+            box-sizing: border-box;
         }
 
         input:focus, textarea:focus {
@@ -92,6 +111,10 @@
 
         input[type="text"] {
             flex-grow: 1;
+        }
+
+        input[type="date"] {
+            color-scheme: dark; /* Makes the calendar picker match dark mode */
         }
 
         button {
@@ -113,22 +136,35 @@
             list-style: none;
             padding: 0;
             margin: 0;
+            overflow-y: auto;
+            max-height: 250px;
         }
 
         li {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
+            padding: 12px;
             background-color: #212124;
             border-radius: 6px;
             margin-bottom: 8px;
             border: 1px solid var(--border-color);
         }
 
+        .task-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .task-date {
+            font-size: 0.8rem;
+            color: #a1a1aa;
+        }
+
         .delete-btn {
             background-color: #ef4444;
-            padding: 5px 10px;
+            padding: 6px 12px;
             font-size: 12px;
         }
 
@@ -136,114 +172,27 @@
             background-color: #dc2626;
         }
 
-        /* Quick Notes Styles */
-        textarea {
+        /* Calendar Responsive Wrapper */
+        .calendar-container {
+            position: relative;
+            padding-bottom: 60%; /* Aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .calendar-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 150px;
-            resize: none;
-            box-sizing: border-box;
+            height: 100%;
+            border: 0;
         }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div id="clock">00:00:00</div>
-        <div id="greeting">Hello!</div>
-    </div>
-
-    <div class="dashboard-grid">
-        <div class="card">
-            <h2>Daily Tasks</h2>
-            <div class="input-group">
-                <input type="text" id="taskInput" placeholder="Add a new task...">
-                <button onclick="addTask()">Add</button>
-            </div>
-            <ul id="taskList"></ul>
-        </div>
-
-        <div class="card">
-            <h2>Scratchpad / Notes</h2>
-            <textarea id="noteArea" placeholder="Type notes here... they will save automatically!"></textarea>
-        </div>
-    </div>
-
-    <script>
-        // 1. Clock and Greeting Logic
-        function updateClock() {
-            const now = new Date();
-            let hours = now.getHours();
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            
-            // Convert to 12-hour format
-            hours = hours % 12;
-            hours = hours ? hours : 12; 
-            const timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
-            
-            document.getElementById('clock').textContent = timeString;
-
-            // Update Greeting based on hours (0-23)
-            const currentHour = now.getHours();
-            let greetingText = "Good evening";
-            if (currentHour < 12) {
-                greetingText = "Good morning";
-            } else if (currentHour < 18) {
-                greetingText = "Good afternoon";
-            }
-            document.getElementById('greeting').textContent = greetingText + ", welcome back!";
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        // 2. To-Do List Logic with LocalStorage
-        const taskInput = document.getElementById('taskInput');
-        const taskList = document.getElementById('taskList');
-        let savedTasks = JSON.parse(localStorage.getItem('dashboardTasks')) || [];
-
-        function renderTasks() {
-            taskList.innerHTML = '';
-            savedTasks.forEach((task, index) => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <span>${task}</span>
-                    <button class="delete-btn" onclick="deleteTask(${index})">Done</button>
-                `;
-                taskList.appendChild(li);
-            });
-            localStorage.setItem('dashboardTasks', JSON.stringify(savedTasks));
-        }
-
-        function addTask() {
-            const taskText = taskInput.value.trim();
-            if (taskText !== '') {
-                savedTasks.push(taskText);
-                taskInput.value = '';
-                renderTasks();
-            }
-        }
-
-        function deleteTask(index) {
-            savedTasks.splice(index, 1);
-            renderTasks();
-        }
-
-        // Allow pressing Enter key to add task
-        taskInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') addTask();
-        });
-
-        // 3. Notepad Logic with LocalStorage
-        const noteArea = document.getElementById('noteArea');
-        noteArea.value = localStorage.getItem('dashboardNotes') || '';
-
-        noteArea.addEventListener('input', () => {
-            localStorage.setItem('dashboardNotes', noteArea.value);
-        });
-
-        // Initial Load
-        renderTasks();
-    </script>
-</body>
-</html>
+        <div id="clock">00:0
