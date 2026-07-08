@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Shared Dashboard</title>
+    <title>Dynamic Priority Dashboard</title>
     <style>
         :root {
             --bg-color: #121214;
@@ -12,6 +12,9 @@
             --accent-color: #6366f1;
             --accent-hover: #4f46e5;
             --border-color: #2d2d34;
+            --high-priority: #ef4444;
+            --med-priority: #f59e0b;
+            --low-priority: #10b981;
         }
 
         body {
@@ -32,7 +35,7 @@
             margin-bottom: 30px;
             position: relative;
             width: 100%;
-            max-width: 1100px;
+            max-width: 1200px;
         }
 
         #clock {
@@ -60,10 +63,16 @@
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            grid-template-columns: 1fr;
             gap: 20px;
             width: 100%;
-            max-width: 1100px;
+            max-width: 1200px;
+        }
+
+        @media (min-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
         .card {
@@ -73,3 +82,162 @@
             padding: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
             display: flex;
+            flex-direction: column;
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            color: #fff;
+        }
+
+        /* Task Creation Controls */
+        .input-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        input, select {
+            background-color: #27272a;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent-color);
+        }
+
+        input[type="text"] { flex-grow: 1; }
+        input[type="date"] { color-scheme: dark; }
+
+        button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        button:hover { background-color: var(--accent-hover); }
+
+        /* Kanban Drop Zones */
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .kanban-column {
+            background-color: #141416;
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .kanban-column.drag-over {
+            background-color: #212127;
+            border-color: var(--accent-color);
+        }
+
+        .column-header {
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .col-high { color: var(--high-priority); }
+        .col-medium { color: var(--med-priority); }
+        .col-low { color: var(--low-priority); }
+
+        /* Draggable Task Item */
+        .task-item {
+            background-color: #212124;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px;
+            cursor: grab;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+            user-select: none;
+        }
+
+        .task-item:active { cursor: grabbing; }
+
+        .task-item.high { border-left: 4px solid var(--high-priority); }
+        .task-item.medium { border-left: 4px solid var(--med-priority); }
+        .task-item.low { border-left: 4px solid var(--low-priority); }
+
+        .task-info { display: flex; flex-direction: column; gap: 3px; }
+        .task-text { font-size: 14px; font-weight: 600; word-break: break-word; }
+        .task-date { font-size: 11px; color: #a1a1aa; }
+
+        .delete-btn {
+            background-color: transparent;
+            color: #a1a1aa;
+            padding: 2px 6px;
+            font-size: 11px;
+            border: 1px solid var(--border-color);
+        }
+        .delete-btn:hover {
+            background-color: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+        /* Calendar Container */
+        .calendar-container {
+            position: relative;
+            padding-bottom: 70%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .calendar-container iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%; border: 0;
+        }
+
+        /* Settings Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            justify-content: center; align-items: center; z-index: 10;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 25px; border-radius: 12px;
+            width: 90%; max-width:
