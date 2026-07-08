@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Dashboard</title>
+    <title>Cyber Dashboard with Multi-Sync</title>
     <style>
         :root {
             --bg-color: #06070d;
@@ -101,7 +101,7 @@
 
         @media (min-width: 1100px) {
             .dashboard-grid {
-                grid-template-columns: 1.35fr 0.65fr;
+                grid-template-columns: 1.25fr 0.75fr;
             }
         }
 
@@ -127,6 +127,32 @@
             color: #fff;
         }
 
+        /* Tabs for Merged Calendars */
+        .cal-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .cal-tab {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glow);
+            color: var(--text-sub);
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cal-tab.active {
+            background: rgba(108, 92, 231, 0.2);
+            color: #fff;
+            border-color: var(--border-bright);
+        }
+
+        /* Forms Configuration */
         .input-stack {
             display: flex;
             flex-direction: column;
@@ -194,7 +220,6 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            transition: all 0.2s ease;
         }
 
         .kanban-column.drag-over {
@@ -207,356 +232,4 @@
             font-size: 0.8rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 4px;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 2;
-            padding: 6px 0;
-        }
-
-        .col-high { color: var(--high); text-shadow: 0 0 10px rgba(255, 56, 56, 0.2); }
-        .col-medium { color: var(--medium); text-shadow: 0 0 10px rgba(255, 159, 67, 0.2); }
-        .col-low { color: var(--low); text-shadow: 0 0 10px rgba(16, 172, 132, 0.2); }
-
-        .task-item {
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 10px;
-            padding: 14px;
-            cursor: grab;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            user-select: none;
-            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-
-        .task-item:hover {
-            transform: translateY(-2px) scale(1.01);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
-            border-color: rgba(255, 255, 255, 0.12);
-        }
-
-        .task-item:active { cursor: grabbing; }
-
-        .task-item.high { background: var(--high-bg); border-left: 3px solid var(--high); }
-        .task-item.medium { background: var(--medium-bg); border-left: 3px solid var(--medium); }
-        .task-item.low { background: var(--low-bg); border-left: 3px solid var(--low); }
-
-        .task-info { display: flex; flex-direction: column; gap: 4px; }
-        .task-text { font-size: 14px; font-weight: 500; color: #fff; word-break: break-word; }
-        .task-date { font-size: 11px; color: var(--text-sub); display: flex; align-items: center; gap: 4px; }
-
-        .delete-btn {
-            background: rgba(255, 255, 255, 0.02);
-            color: var(--text-sub);
-            padding: 6px 10px;
-            font-size: 11px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 6px;
-            transition: all 0.2s ease;
-        }
-        .delete-btn:hover {
-            background-color: var(--high);
-            color: white;
-            border-color: var(--high);
-            box-shadow: 0 4px 12px rgba(255, 56, 56, 0.3);
-        }
-
-        .kanban-column::-webkit-scrollbar { width: 4px; }
-        .kanban-column::-webkit-scrollbar-track { background: transparent; }
-        .kanban-column::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 10px; }
-
-        .calendar-container {
-            position: relative;
-            padding-bottom: 100%;
-            height: 0;
-            overflow: hidden;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .calendar-container iframe {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%; border: 0;
-        }
-
-        .apple-fallback-box {
-            position: absolute;
-            text-align: center;
-            padding: 20px;
-            z-index: 1;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(3, 4, 8, 0.85);
-            backdrop-filter: blur(15px);
-            justify-content: center; align-items: center; z-index: 10;
-        }
-
-        .modal-content {
-            background-color: #0d0f1c;
-            border: 1px solid var(--border-glow);
-            padding: 30px; border-radius: 16px;
-            width: 90%; max-width: 460px;
-            display: flex; flex-direction: column; gap: 18px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-        }
-    </style>
-</head>
-<body>
-
-    <div class="header">
-        <div id="clock">00:00:00</div>
-        <div id="greeting">WELCOME BACK</div>
-        <button class="settings-btn" onclick="toggleModal(true)">⚙️ Setup Calendar</button>
-    </div>
-
-    <div class="dashboard-grid">
-        <div class="card">
-            <h2>Priority Board</h2>
-            <div class="input-stack">
-                <input type="text" id="taskInput" placeholder="What needs to be done?">
-                <div class="input-row">
-                    <input type="date" id="dateInput">
-                    <select id="priorityInput">
-                        <option value="high">🔥 High Priority</option>
-                        <option value="medium" selected>⚡ Medium Priority</option>
-                        <option value="low">🌱 Low Priority</option>
-                    </select>
-                    <button class="action-btn" onclick="addTask()">Add Task</button>
-                </div>
-            </div>
-
-            <div class="kanban-board">
-                <div class="kanban-column" id="high" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="drop(event)">
-                    <div class="column-header col-high">High</div>
-                </div>
-                <div class="kanban-column" id="medium" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="drop(event)">
-                    <div class="column-header col-medium">Medium</div>
-                </div>
-                <div class="kanban-column" id="low" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="drop(event)">
-                    <div class="column-header col-low">Low</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2 id="calendarTitle">Shared Calendar</h2>
-            <div class="calendar-container">
-                <div id="appleFallback" class="apple-fallback-box" style="display: none;">
-                    <p style="color: var(--text-sub); font-size: 14px; margin-bottom: 15px;">Apple Calendar cannot be embedded directly on websites due to privacy locks.</p>
-                    <a id="appleLink" href="#" target="_blank"><button class="action-btn">🔗 Open Apple Calendar</button></a>
-                </div>
-                <iframe id="calendarFrame" src=""></iframe>
-            </div>
-        </div>
-    </div>
-
-    <div id="settingsModal" class="modal">
-        <div class="modal-content">
-            <h3 style="margin: 0; color: #fff;">Configure Calendar</h3>
-            
-            <label style="font-size: 12px; color: var(--text-sub); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Calendar Provider</label>
-            <select id="calTypeInput" onchange="handleCalTypeChange()">
-                <option value="google">Google Calendar</option>
-                <option value="outlook">Outlook / Live Calendar</option>
-                <option value="apple">Apple Calendar Link</option>
-            </select>
-
-            <div id="urlInputContainer" class="input-stack" style="margin-bottom: 0;">
-                <label id="urlLabel" style="font-size: 12px; color: var(--text-sub); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Embed Link / URL</label>
-                <input type="text" id="calUrlInput" placeholder="https://...">
-            </div>
-
-            <div class="input-row" style="justify-content: flex-end; margin-top: 5px;">
-                <button onclick="toggleModal(false)" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--border-glow); padding: 10px 18px; border-radius: 8px; cursor: pointer;">Cancel</button>
-                <button class="action-btn" onclick="saveCalendarConfig()">Save & Sync</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function updateClock() {
-            const now = new Date();
-            let hours = now.getHours();
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12 || 12; 
-            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
-
-            const currentHour = now.getHours();
-            let greetingText = "GOOD EVENING";
-            if (currentHour < 12) greetingText = "GOOD MORNING";
-            else if (currentHour < 18) greetingText = "GOOD AFTERNOON";
-            document.getElementById('greeting').textContent = greetingText + " // WELCOME BACK";
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-        document.getElementById('dateInput').valueAsDate = new Date();
-
-        // Multi-provider Calendar Systems
-        const defaultCal = "https://calendar.google.com/calendar/embed?src=en.usa%23holiday%40group.v.calendar.google.com&ctz=America%2FNew_York&mode=MONTH&wkst=1&bgcolor=%230d0f1c";
-        const calendarFrame = document.getElementById('calendarFrame');
-        const calUrlInput = document.getElementById('calUrlInput');
-        const calTypeInput = document.getElementById('calTypeInput');
-        const settingsModal = document.getElementById('settingsModal');
-        const appleFallback = document.getElementById('appleFallback');
-        const appleLink = document.getElementById('appleLink');
-        const calendarTitle = document.getElementById('calendarTitle');
-
-        let currentType = localStorage.getItem('calendarType') || 'google';
-        let currentUrl = localStorage.getItem('sharedCalendarLink') || defaultCal;
-
-        calTypeInput.value = currentType;
-        calUrlInput.value = currentUrl;
-        applyCalendar(currentType, currentUrl);
-
-        function handleCalTypeChange() {
-            const type = calTypeInput.value;
-            if (type === 'apple') {
-                calUrlInput.placeholder = "webcal://calendar.apple.com/... or https://...";
-            } else if (type === 'outlook') {
-                calUrlInput.placeholder = "https://outlook.live.com/calendar/...embed...";
-            } else {
-                calUrlInput.placeholder = "https://calendar.google.com/calendar/embed?src=...";
-            }
-        }
-
-        function toggleModal(show) { 
-            settingsModal.style.display = show ? 'flex' : 'none'; 
-            if(show) handleCalTypeChange();
-        }
-
-        function saveCalendarConfig() {
-            const type = calTypeInput.value;
-            const url = calUrlInput.value.trim();
-            if (url) {
-                localStorage.setItem('calendarType', type);
-                localStorage.setItem('sharedCalendarLink', url);
-                applyCalendar(type, url);
-                toggleModal(false);
-            }
-        }
-
-        function applyCalendar(type, url) {
-            if (type === 'apple') {
-                calendarFrame.style.display = 'none';
-                appleFallback.style.display = 'block';
-                // Convert webcal to regular https for safe standard links
-                let cleanUrl = url.replace('webcal://', 'https://');
-                appleLink.href = cleanUrl;
-                calendarTitle.textContent = "Apple Calendar (External Link)";
-            } else {
-                appleFallback.style.display = 'none';
-                calendarFrame.style.display = 'block';
-                calendarFrame.src = url;
-                calendarTitle.textContent = type === 'outlook' ? "Outlook Calendar" : "Shared Google Calendar";
-            }
-        }
-
-        // Kanban Priority Systems 
-        let savedTasks = JSON.parse(localStorage.getItem('kanbanDashboardTasks')) || [];
-
-        function renderTasks() {
-            document.querySelectorAll('.kanban-column').forEach(col => {
-                const header = col.querySelector('.column-header');
-                col.innerHTML = '';
-                col.appendChild(header);
-            });
-
-            savedTasks.forEach(task => {
-                const targetColumn = document.getElementById(task.priority);
-                if (targetColumn) {
-                    const taskEl = document.createElement('div');
-                    taskEl.className = `task-item ${task.priority}`;
-                    taskEl.id = task.id;
-                    taskEl.draggable = true;
-                    taskEl.addEventListener('dragstart', dragStart);
-
-                    let formattedDate = "No date";
-                    if (task.date) {
-                        formattedDate = new Date(task.date + 'T00:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-                    }
-
-                    taskEl.innerHTML = `
-                        <div class="task-info">
-                            <span class="task-text">${task.text}</span>
-                            <span class="task-date">📅 ${formattedDate}</span>
-                        </div>
-                        <button class="delete-btn" onclick="deleteTask('${task.id}')">✕</button>
-                    `;
-                    targetColumn.appendChild(taskEl);
-                }
-            });
-
-            localStorage.setItem('kanbanDashboardTasks', JSON.stringify(savedTasks));
-        }
-
-        function addTask() {
-            const textInput = document.getElementById('taskInput');
-            const dateInput = document.getElementById('dateInput');
-            const priorityInput = document.getElementById('priorityInput');
-
-            if (textInput.value.trim() !== '') {
-                const newTask = {
-                    id: 'task_' + Date.now(),
-                    text: textInput.value.trim(),
-                    date: dateInput.value,
-                    priority: priorityInput.value
-                };
-                savedTasks.push(newTask);
-                textInput.value = '';
-                renderTasks();
-            }
-        }
-
-        function deleteTask(id) {
-            savedTasks = savedTasks.filter(t => t.id !== id);
-            renderTasks();
-        }
-
-        function dragStart(e) { e.dataTransfer.setData('text/plain', e.target.id); }
-        function allowDrop(e) {
-            e.preventDefault();
-            const column = e.target.closest('.kanban-column');
-            if (column) column.classList.add('drag-over');
-        }
-        function dragLeave(e) {
-            const column = e.target.closest('.kanban-column');
-            if (column) column.classList.remove('drag-over');
-        }
-        function drop(e) {
-            e.preventDefault();
-            const column = e.target.closest('.kanban-column');
-            if (column) {
-                column.classList.remove('drag-over');
-                const taskId = e.dataTransfer.getData('text/plain');
-                const newPriority = column.id;
-
-                const taskObj = savedTasks.find(t => t.id === taskId);
-                if (taskObj) {
-                    taskObj.priority = newPriority;
-                    renderTasks();
-                }
-            }
-        }
-
-        document.getElementById('taskInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') addTask();
-        });
-
-        renderTasks();
-    </script>
-</body>
-</html>
+            letter-spacing:
