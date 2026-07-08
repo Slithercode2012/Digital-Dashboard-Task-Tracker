@@ -3,66 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Priority Dashboard</title>
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
+    <title>Cyber Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #06070d;
+            --panel-bg: rgba(13, 15, 28, 0.7);
+            --text-main: #f0f3fa;
+            --text-sub: #7a8299;
+            --border-glow: rgba(108, 92, 231, 0.15);
+            --border-bright: rgba(108, 92, 231, 0.4);
+            
+            --high: #ff3838;
+            --medium: #ff9f43;
+            --low: #10ac84;
+            
+            --high-bg: rgba(255, 56, 56, 0.06);
+            --medium-bg: rgba(255, 159, 67, 0.06);
+            --low-bg: rgba(16, 172, 132, 0.06);
+        }
 
-    <div class="header">
-        <div id="clock">00:00:00</div>
-        <div id="greeting">Hello!</div>
-        <button class="settings-btn" onclick="toggleModal(true)">⚙️ Calendar Setup</button>
-    </div>
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(108, 92, 231, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(16, 172, 132, 0.04) 0px, transparent 40%),
+                linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+            background-size: auto, auto, 24px 24px, 24px 24px;
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
 
-    <div class="dashboard-grid">
-        <div class="card">
-            <h2>Priority Board</h2>
-            <div class="input-stack">
-                <input type="text" id="taskInput" placeholder="What needs to be done?">
-                <div class="input-row">
-                    <input type="date" id="dateInput">
-                    <select id="priorityInput">
-                        <option value="high">🔥 High</option>
-                        <option value="medium" selected>⚡ Medium</option>
-                        <option value="low">🌱 Low</option>
-                    </select>
-                    <button onclick="addTask()">Add</button>
-                </div>
-            </div>
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            width: 100%;
+            max-width: 1250px;
+        }
 
-            <div class="kanban-board">
-                <div class="kanban-column" id="high" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="drop(event)">
-                    <div class="column-header col-high">High</div>
-                </div>
-                <div class="kanban-column" id="medium" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="drop(event)">
-                    <div class="column-header col-medium">Medium</div>
-                </div>
-                <div class="kanban-column" id="low" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="drop(event)">
-                    <div class="column-header col-low">Low</div>
-                </div>
-            </div>
-        </div>
+        #clock {
+            font-size: 3.8rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #a8a5ff 0%, #54a0ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            filter: drop-shadow(0 4px 12px rgba(168, 165, 255, 0.2));
+        }
 
-        <div class="card">
-            <h2>Shared Calendar</h2>
-            <div class="calendar-container">
-                <iframe id="calendarFrame" src="https://calendar.google.com/calendar/embed?src=en.usa%23holiday%40group.v.calendar.google.com&ctz=America%2FNew_York&mode=MONTH&wkst=1&bgcolor=%231a1b26"></iframe>
-            </div>
-        </div>
-    </div>
+        #greeting {
+            font-size: 1.1rem;
+            margin-top: 8px;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 500;
+        }
 
-    <div id="settingsModal" class="modal">
-        <div class="modal-content">
-            <h3 style="margin: 0; color: #fff;">Configure Shared Calendar</h3>
-            <p style="font-size: 14px; color: #a1a1aa; margin: 0;">Paste your Google Calendar embed link below:</p>
-            <input type="text" id="calUrlInput" placeholder="https://calendar.google.com/calendar/embed?src=...">
-            <div class="input-row" style="justify-content: flex-end;">
-                <button onclick="toggleModal(false)" style="background-color: #27272a;">Cancel</button>
-                <button onclick="saveCalendarLink()">Save & Reload</button>
-            </div>
-        </div>
-    </div>
+        .settings-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glow);
+            padding: 12px 18px;
+            font-size: 13px;
+            color: var(--text-main);
+            border-radius: 8px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
 
-    <script src="js/app.js"></script>
-</body>
-</html>
+        .settings-btn:hover {
+            border-color: var(--border-bright);
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            width: 100%;
+            max-width: 1250px;
+        }
+
+        @media (min-width: 1100px) {
+            .dashboard-grid {
+                grid-template-columns: 1.35fr 0.65fr;
+            }
+        }
+
+        .card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 26px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        /* Modernized Form Fields */
+        .input-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 26px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        input, select {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-glow);
+            color: #fff;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--border-bright);
+            box-shadow: 0 0 15px rgba(108, 92, 231, 0.15);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        input[type="text"] { flex-grow: 1; }
+        input[type="date"] { color-scheme: dark; }
+
+        button.action-btn {
+            background: linear-gradient(135deg, #6c5ce7 0%, #a8a5ff 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        button.action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+        }
+
+        /* Kanban Visual Fixes */
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .kanban-column {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px dashed
