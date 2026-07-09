@@ -3,12 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Dashboard - Merged Calendar</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ical.js/1.5.0/ical.min.js"></script>
-
+    <title>Cyber Dashboard - Native Grid</title>
     <style>
         :root {
             --bg-color: #06070d;
@@ -47,7 +42,6 @@
         .header {
             text-align: center;
             margin-bottom: 40px;
-            position: relative;
             width: 100%;
             max-width: 1350px;
         }
@@ -70,32 +64,6 @@
             letter-spacing: 2px;
         }
 
-        .header-actions {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            right: 10px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .settings-btn {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-glow);
-            padding: 12px 18px;
-            font-size: 13px;
-            color: var(--text-main);
-            border-radius: 8px;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.2s ease;
-        }
-
-        .settings-btn:hover {
-            border-color: var(--border-bright);
-            background: rgba(255, 255, 255, 0.07);
-        }
-
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -113,7 +81,6 @@
         .card {
             background: var(--panel-bg);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-glow);
             border-radius: 16px;
             padding: 26px;
@@ -167,4 +134,110 @@
             font-weight: 600;
         }
 
-        #calendar {
+        /* Pure CSS Native Calendar Layout */
+        .native-cal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .cal-btn {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-glow);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .native-cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            text-align: center;
+        }
+        .weekday-label {
+            color: var(--text-sub);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding-bottom: 8px;
+        }
+        .cal-day {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            min-height: 70px;
+            padding: 6px;
+            text-align: right;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .cal-day.today {
+            border-color: var(--border-bright);
+            background: rgba(108, 92, 231, 0.05);
+        }
+        .cal-day.empty {
+            background: transparent;
+            border: none;
+        }
+        .day-number {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .day-events {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-top: 5px;
+            text-align: left;
+        }
+        .native-event-badge {
+            font-size: 10px;
+            padding: 2px 4px;
+            border-radius: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            background: var(--medium-bg);
+            border-left: 2px solid var(--medium);
+            color: #fff;
+        }
+
+        /* Kanban Layout */
+        .kanban-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        .kanban-column { background-color: rgba(0, 0, 0, 0.2); border: 1px dashed rgba(255, 255, 255, 0.04); border-radius: 12px; padding: 14px; min-height: 380px; display: flex; flex-direction: column; gap: 12px; }
+        .column-header { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; text-align: center; }
+        .col-high { color: var(--high); } .col-medium { color: var(--medium); } .col-low { color: var(--low); }
+        .task-item { border: 1px solid rgba(255, 255, 255, 0.03); border-radius: 10px; padding: 14px; display: flex; justify-content: space-between; align-items: center; }
+        .task-item.high { background: var(--high-bg); border-left: 3px solid var(--high); }
+        .task-item.medium { background: var(--medium-bg); border-left: 3px solid var(--medium); }
+        .task-item.low { background: var(--low-bg); border-left: 3px solid var(--low); }
+        .delete-btn { background: transparent; color: var(--text-sub); border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div id="clock">00:00:00</div>
+        <div id="greeting">LOCAL DESKTOP SYSTEM</div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="card">
+            <h2>Priority Board</h2>
+            <div class="input-stack">
+                <input type="text" id="taskInput" placeholder="What needs to be done?">
+                <div class="input-row">
+                    <input type="date" id="dateInput">
+                    <select id="priorityInput">
+                        <option value="high">🔥 High Priority</option>
+                        <option value="medium" selected>⚡ Medium Priority</option>
+                        <option value="low">🌱 Low Priority</option>
+                    </select>
+                    <button class="action-btn" onclick="addTask()">Add Task</button>
+                </div>
+            </div>
+
+            <div class="kanban-
