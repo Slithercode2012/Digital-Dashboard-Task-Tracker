@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cyber Dashboard - Merged Calendar</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ical.js/1.5.0/ical.min.js"></script>
+
     <style>
         :root {
             --bg-color: #06070d;
@@ -15,11 +17,9 @@
             --text-sub: #7a8299;
             --border-glow: rgba(108, 92, 231, 0.15);
             --border-bright: rgba(108, 92, 231, 0.4);
-            
             --high: #ff3838;
             --medium: #ff9f43;
             --low: #10ac84;
-            
             --high-bg: rgba(255, 56, 56, 0.06);
             --medium-bg: rgba(255, 159, 67, 0.06);
             --low-bg: rgba(16, 172, 132, 0.06);
@@ -60,7 +60,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin: 0;
-            filter: drop-shadow(0 4px 12px rgba(168, 165, 255, 0.2));
         }
 
         #greeting {
@@ -69,7 +68,6 @@
             color: var(--text-sub);
             text-transform: uppercase;
             letter-spacing: 2px;
-            font-weight: 500;
         }
 
         .header-actions {
@@ -128,7 +126,6 @@
             margin-top: 0;
             font-size: 1.3rem;
             font-weight: 700;
-            letter-spacing: 0.5px;
             padding-bottom: 16px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             color: #fff;
@@ -155,12 +152,6 @@
             font-size: 14px;
             outline: none;
             box-sizing: border-box;
-            transition: all 0.2s ease;
-        }
-
-        input:focus, select:focus {
-            border-color: var(--border-bright);
-            box-shadow: 0 0 15px rgba(108, 92, 231, 0.15);
         }
 
         input[type="text"] { flex-grow: 1; }
@@ -174,16 +165,6 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
         }
 
         #calendar {
-            background: rgba(0,0,0,0.2);
-            border-radius: 12px;
-            padding: 12px;
-            border: 1px solid rgba(255,255,255,0.03);
-            font-size: 13px;
-        }
-        .fc th { color: var(--text-sub) !important; font-weight: 600 !important; text-transform: uppercase; font-size: 11px; padding: 8px 0 !important; }
-        .fc td { border-color: rgba(255,255,255,0.04) !important; }
-        .fc-theme-standard .fc-scrollgrid { border-color: rgba(
